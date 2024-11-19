@@ -1,0 +1,15 @@
+[tool.poetry]
+name = "my-telegra-ph"
+version = "0.1.0"
+description = ""
+authors = ["fedorov0av <fedorov0av@gmail.com>"]
+readme = "README.md"
+packages = [{include = "my"}]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+fastapi = "^0.115.5"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
