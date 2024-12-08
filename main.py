@@ -1,27 +1,20 @@
-from typing import Union
+from fastapi import FastAPI, Request
+from fastapi.templating import Jinja2Templates
+from fastapi.staticfiles import StaticFiles
 
-from fastapi import FastAPI
-from pydantic import BaseModel
+from app.api.page import router_page
+
 
 app = FastAPI()
+templates = Jinja2Templates(directory="app/templates")
+app.mount("/static_js", StaticFiles(directory="app/templates/static/js"), name="static_js")
+app.mount("/static_css", StaticFiles(directory="app/templates/static/css"), name="static_css")
+app.mount("/static_images", StaticFiles(directory="app/templates/static/images"), name="static_images")
 
-
-class Item(BaseModel):
-    name: str
-    price: float
-    is_offer: Union[bool, None] = None
-
+app.include_router(router_page)
 
 @app.get("/")
-def read_root():
-    return {"Hello": "World"}
-
-
-@app.get("/items/{item_id}")
-def read_item(item_id: int, q: Union[str, None] = None):
-    return {"item_id": item_id, "q": q}
-
-
-@app.put("/items/{item_id}")
-def update_item(item_id: int, item: Item):
-    return {"item_name": item.name, "item_id": item_id}
+async def read_item(request: Request):
+    return templates.TemplateResponse(
+        request=request, name="base.html"
+    )
