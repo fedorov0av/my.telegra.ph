@@ -1,4 +1,5 @@
 import re
+from datetime import datetime
 from transliterate import translit
 
 def convert_text_for_url(text: str) -> str:
@@ -11,3 +12,6 @@ def convert_text_for_url(text: str) -> str:
     text = re.sub(r'[^\w\s-]', '', text)  # снова очищаем строку от всех символов, которые не буквы и не цифры, т.к. к примеру мягкий знак после translit становиться "верхней запятой"
 
     return text.lower()
+
+def get_date_for_content(date: str) -> str: #  date = '2024-10-25T13:22:57+0000'
+    return datetime.strptime(date, "%Y-%m-%dT%H:%M:%S%z").strftime("%B %d, %Y"), # 'October 25, 2024'
