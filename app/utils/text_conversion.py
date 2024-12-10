@@ -14,4 +14,4 @@ def convert_text_for_url(text: str) -> str:
     return text.lower()
 
 def get_date_for_content(date: str) -> str: #  date = '2024-10-25T13:22:57+0000'
-    return datetime.strptime(date, "%Y-%m-%dT%H:%M:%S%z").strftime("%B %d, %Y"), # 'October 25, 2024'
+    return datetime.strptime(date, "%Y-%m-%dT%H:%M:%S%z").strftime("%B %d, %Y") # 'October 25, 2024'
