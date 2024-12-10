@@ -3,9 +3,12 @@ from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
 from loguru import logger
 
+from app import setup
 from app.api.page import router_page
 from app.utils.text_conversion import get_date_for_content
 from app import setup
+from .config import SqliteDB, PostgresDB, DATABASE_DIR
+
 
 TITLE = 'Нужен url страницы'
 SERVICE_NAME = 'FlashNote'
@@ -16,7 +19,17 @@ URL = 'https://flashnote.ph/Komu-podpischiki-DevOps-FMTema-sredovyj-dajdzhest--2
 HTML_CONTENT = '<p><img src="https://files.catbox.moe/bl8kaz.jpg"/></p><pre>Нужен url страницы</pre>'
 
 
-app = FastAPI()
+# Асинхронная функция, которую нужно запустить при старте
+async def startup_task(app: FastAPI):
+    # Ваши асинхронные операции (например, подключение к БД)
+    database = SqliteDB()
+    database.path = DATABASE_DIR / "app.db"
+
+    session_maker = await setup.init_db(database)
+    # Yield позволяет продолжить выполнение приложения
+    yield
+
+app = FastAPI(lifespan=startup_task)
 templates = Jinja2Templates(directory="app/templates")
 app.mount("/static_js", StaticFiles(directory="app/templates/static/js"), name="static_js")
 app.mount("/static_css", StaticFiles(directory="app/templates/static/css"), name="static_css")
@@ -25,6 +38,8 @@ app.mount("/static_images", StaticFiles(directory="app/templates/static/images")
 app.include_router(router_page)
 setup.init_logging(setup.log.LogSettings())
 logger.info(f"App start!")
+
+# Указываем, чтобы эта функция запускалась при старте приложения
 
 @app.get("/")
 async def get_page(request: Request):
@@ -42,3 +57,4 @@ async def get_page(request: Request):
             "html_content": HTML_CONTENT,
             }
     )
+
