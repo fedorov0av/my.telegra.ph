@@ -1,7 +1,9 @@
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request, Depends
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
+from sqlalchemy.ext.asyncio import AsyncSession
 from loguru import logger
+from typing import Annotated
 
 from app import setup
 from app.api.page import router_page
@@ -24,12 +26,14 @@ async def startup_task(app: FastAPI):
     # Ваши асинхронные операции (например, подключение к БД)
     database = SqliteDB()
     database.path = DATABASE_DIR / "app.db"
-
+    
     session_maker = await setup.init_db(database)
     # Yield позволяет продолжить выполнение приложения
     yield
 
-app = FastAPI(lifespan=startup_task)
+app = FastAPI(lifespan=startup_task, docs_url="/api/docs")
+#DBSessionDep = Annotated[AsyncSession, Depends(setup.get_db_session)]
+
 templates = Jinja2Templates(directory="app/templates")
 app.mount("/static_js", StaticFiles(directory="app/templates/static/js"), name="static_js")
 app.mount("/static_css", StaticFiles(directory="app/templates/static/css"), name="static_css")
