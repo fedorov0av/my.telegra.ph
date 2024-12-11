@@ -1,0 +1,9 @@
+# для локального использования
+localhost {
+  reverse_proxy my-telegra-ph:8000
+}
+
+# с использованием домена
+#domain.name {
+#  reverse_proxy my-telegra-ph:8000
+#}

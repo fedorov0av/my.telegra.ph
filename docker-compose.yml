@@ -4,10 +4,25 @@ services:
     build: ./
     restart: unless-stopped
     command: uvicorn app.main:app --host 0.0.0.0 --port 8000
-    ports:
-      - "8000:8000"
+    expose:
+      - "8000"  # Открывает порт внутри сети Docker (не пробрасывает наружу)
     volumes:
-      - ./config.yml:/app/config.yml
       - ./logs:/app/logs
       - ./database:/app/database
-      - ./media:/app/media
+    networks:
+      - my_network
+
+  caddy:
+    image: caddy:2.8.4
+    restart: unless-stopped
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+    ports:
+      - "80:80"  # HTTP порт
+      - "443:443"  # HTTPS порт
+    networks:
+      - my_network
+
+networks:
+  my_network:
+    driver: bridge
