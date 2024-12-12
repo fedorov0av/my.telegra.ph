@@ -1,16 +1,17 @@
+import asyncio
 import contextlib
 from typing import Any, AsyncIterator
 from loguru import logger
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, AsyncSession, AsyncConnection
-from sqlalchemy.orm import close_all_sessions
+from sqlalchemy.orm import close_all_sessions, sessionmaker
 from sqlalchemy.exc import ArgumentError
+from sqlalchemy import create_engine
 
 from app.db.models import Base
 from ..config import SqliteDB, PostgresDB, DATABASE_DIR
 
 
 Database = SqliteDB | PostgresDB
-
 
 async def close_db():
     close_all_sessions()
@@ -19,12 +20,26 @@ async def close_db():
 
 async def dev_init_db(db: Database = PostgresDB.default()) -> async_sessionmaker:
     from sqlalchemy_utils import database_exists, create_database
-    logger.info(f"Initializing Database {db.database}[{db.host}]...")
+    #logger.info(f"Initializing Database {db.database}[{db.host}]...")
     engine = create_async_engine(db.url, echo=True)
-
+    #logger.info(database_exists(db.sync_url))
+    print('$$$$$$$$$$$$$$$$$$$$$$$$$$$$$')
+    print('$$$$$$$$$$$$$$$$$$$$$$$$$$$$$')
+    print('$$$$$$$$$$$$$$$$$$$$$$$$$$$$$')
+    print('$$$$$$$$$$$$$$$$$$$$$$$$$$$$$')
+    print('$$$$$$$$$$$$$$$$$$$$$$$$$$$$$')
+    
     if not database_exists(db.sync_url):
-        create_database(db.sync_url)
-        logger.info(f"Database {db.database}[{db.host}] created")
+        print('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
+        engine_sync = create_engine(db.sync_url, echo=True)
+        print(engine_sync.url)
+        if not DATABASE_DIR.exists():
+            DATABASE_DIR.mkdir(parents=True, exist_ok=True)
+        Base.metadata.create_all(bind=engine_sync)
+        print('4234324324234')
+
+        #create_database(db.sync_url)
+        #logger.info(f"Database {db.database}[{db.host}] created")
 
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.drop_all)
@@ -35,6 +50,7 @@ async def dev_init_db(db: Database = PostgresDB.default()) -> async_sessionmaker
 
 
 async def init_db(db: Database = PostgresDB.default(), dev: bool = False) -> async_sessionmaker:
+    print(dev)
     if dev:
         return await dev_init_db(db)
     logger.info(f"Initializing {db}...")
@@ -89,13 +105,18 @@ class DatabaseSessionManager:
         finally:
             await session.close()
 
+async def create_db():
+    database = SqliteDB()
+    database.path = str(DATABASE_DIR / "app.db")
+    await dev_init_db(database)
+
 try:
-    sessionmanager = DatabaseSessionManager(DATABASE_DIR / "app.db", {"echo": True})
-except ArgumentError:
-    from sqlalchemy_utils import database_exists, create_database
-    create_database(DATABASE_DIR / "app.db")
-finally:
-    sessionmanager = DatabaseSessionManager(DATABASE_DIR / "app.db", {"echo": True})
+    sessionmanager = DatabaseSessionManager(str(DATABASE_DIR / "app.db"), {"echo": True})
+except:
+    asyncio.create_task(create_db())
+
+
+
 
 async def get_db_session():
     async with sessionmanager.session() as session:

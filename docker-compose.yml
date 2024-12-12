@@ -11,6 +11,8 @@ services:
       - ./database:/app/database
     networks:
       - my_network
+    environment:
+      - DATABASE_URL=postgresql://user:password@postgres:5432/db  # Подключение к PostgreSQL
 
   caddy:
     image: caddy:2.8.4
@@ -23,6 +25,22 @@ services:
     networks:
       - my_network
 
+  postgres:
+    image: postgres:13
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: user        # Имя пользователя PostgreSQL
+      POSTGRES_PASSWORD: password # Пароль пользователя
+      POSTGRES_DB: db    # Имя базы данных
+    volumes:
+      - ./database/postgres_data:/var/lib/postgresql/data  # Тома для хранения данных PostgreSQL
+    networks:
+      - my_network
+
 networks:
   my_network:
     driver: bridge
+
+volumes:
+  postgres_data:
+    driver: local

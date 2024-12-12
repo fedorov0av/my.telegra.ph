@@ -5,6 +5,7 @@ class SqliteDB(BaseModel):
     path: str = "app.db"
     timezone: str = "Europe/Moscow"
     dialect: str = "aiosqlite"
+    database: str = "app"
 
     def __str__(self):
         return f"{self.path}"
@@ -18,3 +19,4 @@ class SqliteDB(BaseModel):
     def sync_url(self):
         return (f"sqlite://"
                 f"{self.path}")
+    

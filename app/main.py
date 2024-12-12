@@ -27,12 +27,12 @@ async def startup_task(app: FastAPI):
     database = SqliteDB()
     database.path = DATABASE_DIR / "app.db"
     
-    session_maker = await setup.init_db(database)
+    #session_maker = await setup.init_db(database)
     # Yield позволяет продолжить выполнение приложения
     yield
 
-app = FastAPI(lifespan=startup_task, docs_url="/api/docs")
-#DBSessionDep = Annotated[AsyncSession, Depends(setup.get_db_session)]
+app = FastAPI(docs_url="/api/docs")
+DBSessionDep = Annotated[AsyncSession, Depends(setup.get_db_session)]
 
 templates = Jinja2Templates(directory="app/templates")
 app.mount("/static_js", StaticFiles(directory="app/templates/static/js"), name="static_js")
