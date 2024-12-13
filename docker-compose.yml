@@ -10,9 +10,12 @@ services:
       - ./logs:/app/logs
       - ./database:/app/database
     networks:
-      - my_network
+      - docker_network
     environment:
-      - DATABASE_URL=postgresql://user:password@postgres:5432/db  # Подключение к PostgreSQL
+      - DATABASE_URL=postgresql://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME}  # Подключение к PostgreSQL
+    depends_on:
+      postgres:
+        condition: service_started
 
   caddy:
     image: caddy:2.8.4
@@ -23,22 +26,24 @@ services:
       - "80:80"  # HTTP порт
       - "443:443"  # HTTPS порт
     networks:
-      - my_network
+      - docker_network
 
   postgres:
     image: postgres:13
     restart: unless-stopped
     environment:
-      POSTGRES_USER: user        # Имя пользователя PostgreSQL
-      POSTGRES_PASSWORD: password # Пароль пользователя
-      POSTGRES_DB: db    # Имя базы данных
+      POSTGRES_USER: ${DB_USER}        # Имя пользователя PostgreSQL
+      POSTGRES_PASSWORD: ${DB_PASSWORD} # Пароль пользователя
+      POSTGRES_DB: ${DB_NAME}    # Имя базы данных
+    ports:
+      - "${DB_PORT}:${DB_PORT}"  # для Dev
     volumes:
       - ./database/postgres_data:/var/lib/postgresql/data  # Тома для хранения данных PostgreSQL
     networks:
-      - my_network
+      - docker_network
 
 networks:
-  my_network:
+  docker_network:
     driver: bridge
 
 volumes:

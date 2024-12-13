@@ -21,16 +21,6 @@ URL = 'https://flashnote.ph/Komu-podpischiki-DevOps-FMTema-sredovyj-dajdzhest--2
 HTML_CONTENT = '<p><img src="https://files.catbox.moe/bl8kaz.jpg"/></p><pre>Нужен url страницы</pre>'
 
 
-# Асинхронная функция, которую нужно запустить при старте
-async def startup_task(app: FastAPI):
-    # Ваши асинхронные операции (например, подключение к БД)
-    database = SqliteDB()
-    database.path = DATABASE_DIR / "app.db"
-    
-    #session_maker = await setup.init_db(database)
-    # Yield позволяет продолжить выполнение приложения
-    yield
-
 app = FastAPI(docs_url="/api/docs")
 DBSessionDep = Annotated[AsyncSession, Depends(setup.get_db_session)]
 
@@ -43,7 +33,6 @@ app.include_router(router_page)
 setup.init_logging(setup.log.LogSettings())
 logger.info(f"App start!")
 
-# Указываем, чтобы эта функция запускалась при старте приложения
 
 @app.get("/")
 async def get_page(request: Request):
