@@ -9,7 +9,6 @@ from app import setup
 from app.api.page import router_page
 from app.utils.text_conversion import get_date_for_content
 from app import setup
-from .config import SqliteDB, PostgresDB, DATABASE_DIR
 
 
 TITLE = 'Нужен url страницы'
@@ -22,7 +21,7 @@ HTML_CONTENT = '<p><img src="https://files.catbox.moe/bl8kaz.jpg"/></p><pre>Ну
 
 
 app = FastAPI(docs_url="/api/docs")
-DBSessionDep = Annotated[AsyncSession, Depends(setup.get_db_session)]
+#DBSessionDep = Annotated[AsyncSession, Depends(setup.get_db_session)]
 
 templates = Jinja2Templates(directory="app/templates")
 app.mount("/static_js", StaticFiles(directory="app/templates/static/js"), name="static_js")
