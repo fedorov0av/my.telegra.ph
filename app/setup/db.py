@@ -35,13 +35,16 @@ async def check_init_models():
         )
         await sys_conn.close()
         async with engine.begin() as conn:
-            await conn.run_sync(Base.metadata.drop_all)
+            #await conn.run_sync(Base.metadata.drop_all)
             await conn.run_sync(Base.metadata.create_all)
-
     except Exception as e:
         print(e)
         return
     else:
+        tables = await conn.fetch("SELECT table_name FROM information_schema.tables WHERE table_schema = 'public'") # Выполняем запрос для получения списка всех таблиц
+        if not tables: # и если таблиц нет создаем их
+            async with engine.begin() as conn:
+                await conn.run_sync(Base.metadata.create_all)
         await conn.close()
         return
 
