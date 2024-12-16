@@ -1,6 +1,7 @@
 import re
 from datetime import datetime
 from transliterate import translit
+from loguru import logger
 
 def convert_text_for_url(text: str) -> str:
     # Заменяем пробелы на дефисы и убираем символы, которые не являются буквами или цифрами (кроме пробелов)
@@ -14,4 +15,9 @@ def convert_text_for_url(text: str) -> str:
     return text.lower()
 
 def get_date_for_content(date: str) -> str: #  date = '2024-10-25T13:22:57+0000'
+    T_Z = '+0000'
+    if isinstance(date, datetime):
+        date = date.strftime('%Y-%m-%dT%H:%M:%S%z')
+    if date[-5:] != T_Z:
+        date += T_Z
     return datetime.strptime(date, "%Y-%m-%dT%H:%M:%S%z").strftime("%B %d, %Y") # 'October 25, 2024'

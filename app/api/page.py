@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Request
+from fastapi import APIRouter, Request, HTTPException
 from fastapi.templating import Jinja2Templates
 
 from ..setup import DBSessionDep
@@ -28,19 +28,21 @@ async def add_page(session: DBSessionDep, page: PageS):
 #     return {"item_name": item.name, "item_id": item_id}
 
 @router_page.get("/{url}")
-async def get_page(url: str, request: Request):
-    print(url)
+async def get_page(session: DBSessionDep, url: str, request: Request):
+    page_db: Page = await Page.get_page_by_url(session, url)
+    if not page_db: 
+        raise HTTPException(status_code=404, detail="Page not found")
     return templates.TemplateResponse(
         request=request, name="base.html",
         context={
-            "title_tag": TITLE + ' – ' + SERVICE_NAME,
-            "title": TITLE,
+            "title_tag": page_db.page_title + ' – ' + SERVICE_NAME,
+            "title": page_db.page_title,
             "service_name": SERVICE_NAME,
-            "description": DESCRIPTION,
-            "published_time": PUBLISHED_TIME,
-            "modified_time": MODIFIED_TIME,
-            "url": URL,
-            "date": get_date_for_content(PUBLISHED_TIME),
-            "html_content": HTML_CONTENT,
+            "description": page_db.page_description,
+            "published_time": page_db.created_at,
+            "modified_time": page_db.updated_at,
+            "url": page_db.page_url,
+            "date": get_date_for_content(page_db.created_at),
+            "html_content": page_db.page_content,
             }
     )
