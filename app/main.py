@@ -1,9 +1,8 @@
-from fastapi import FastAPI, Request, Depends
+from fastapi import FastAPI, Request
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
-from sqlalchemy.ext.asyncio import AsyncSession
+from fastapi.exceptions import HTTPException
 from loguru import logger
-from typing import Annotated
 
 from app import setup
 from app.api.page import router_page
@@ -19,11 +18,20 @@ MODIFIED_TIME = '2024-10-25T13:22:57+0000'
 URL = 'https://flashnote.ph/Komu-podpischiki-DevOps-FMTema-sredovyj-dajdzhest--2-oktyabrya-prazdnuetsya-den-rozhdeniya-ehlektronnoj-pochty-10-25'
 HTML_CONTENT = '<p><img src="https://files.catbox.moe/bl8kaz.jpg"/></p><pre>Нужен url страницы</pre>'
 
-
-app = FastAPI(docs_url="/api/docs")
-#DBSessionDep = Annotated[AsyncSession, Depends(setup.get_db_session)]
+async def not_found_error(request: Request, exc: HTTPException):
+    return templates.TemplateResponse(
+        request=request, name="404.html",
+        context={"service_name": SERVICE_NAME,}
+    )
 
 templates = Jinja2Templates(directory="app/templates")
+
+exception_handlers = {
+    404: not_found_error,
+}
+
+app = FastAPI(docs_url="/api/docs", redoc_url=None, exception_handlers=exception_handlers)
+
 app.mount("/static_js", StaticFiles(directory="app/templates/static/js"), name="static_js")
 app.mount("/static_css", StaticFiles(directory="app/templates/static/css"), name="static_css")
 app.mount("/static_images", StaticFiles(directory="app/templates/static/images"), name="static_images")
