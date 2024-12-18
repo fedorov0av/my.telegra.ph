@@ -6,8 +6,6 @@ from loguru import logger
 
 from app import setup
 from app.api.page import router_page
-from app.utils.text_conversion import get_date_for_content
-from app import setup
 from .config.consts import config
 from app.config.consts import SERVICE_NAME
 

@@ -5,8 +5,7 @@ from ..setup import DBSessionDep
 from app.schemas.page import PageS
 from ..db.models.page import Page
 from ..utils.text_conversion import get_date_for_content, convert_text_for_url
-from ..config.consts import TITLE, SERVICE_NAME, DESCRIPTION, PUBLISHED_TIME, MODIFIED_TIME, \
-                            URL, HTML_CONTENT
+from ..config.consts import SERVICE_NAME
 
 templates = Jinja2Templates(directory="app/templates")
 router_page = APIRouter()

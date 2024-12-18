@@ -1,7 +1,7 @@
 import re
 from datetime import datetime
 from transliterate import translit
-from loguru import logger
+
 
 def convert_text_for_url(text: str) -> str:
     # Заменяем пробелы на дефисы и убираем символы, которые не являются буквами или цифрами (кроме пробелов)
