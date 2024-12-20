@@ -7,26 +7,42 @@ from ..db.models.page import Page
 from ..utils.text_conversion import get_date_for_content, convert_text_for_url
 from ..config.consts import SERVICE_NAME
 
+
 templates = Jinja2Templates(directory="app/templates")
 router_page = APIRouter()
 
-@router_page.post("/add_page/")
+@router_page.post("/add_page/") # добавление страницы
 async def add_page(session: DBSessionDep, page: PageS):
+    page_url = convert_text_for_url(page.page_path)
     page_db = await Page.add_page(
                     session = session,
                     page_title = page.page_title,
                     page_description = page.page_description,
                     page_path = page.page_path,
                     page_content = page.page_content,
-                    page_url = convert_text_for_url(page.page_path)
+                    page_url = page_url
                     )
     return page
 
-# @router_page.put("/items/{item_id}")
-# def update_item(item_id: int, item: Item):
-#     return {"item_name": item.name, "item_id": item_id}
+@router_page.put("/update_page/") # обновление страницы
+async def update_page(session: DBSessionDep, page: PageS):
+    page_url = convert_text_for_url(page.page_path)
+    page_db: Page = await Page.get_page_by_url(session, page_url)
+    if not page_db:
+        raise HTTPException(status_code=404, detail="Page not found")
+    page_db.page_title = page.page_title
+    page_db.page_description = page.page_description
+    page_db.page_path = page.page_path
+    page_db.page_content = page.page_content
+    page_db.page_url = page_url
+    try:
+        await session.commit()
+    except Exception as e:
+        await session.rollback()
+        raise HTTPException(status_code=500, detail="Failed to update page") from e
+    return page
 
-@router_page.get("/{url}")
+@router_page.get("/{url}") # получение страницы
 async def get_page(session: DBSessionDep, url: str, request: Request):
     page_db: Page = await Page.get_page_by_url(session, url)
     if not page_db: 
