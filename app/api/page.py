@@ -6,7 +6,7 @@ from app.schemas.page import PageS
 from ..db.models.page import Page
 from ..utils.text_conversion import get_date_for_content, convert_text_for_url
 from ..config.consts import SERVICE_NAME
-
+from loguru import logger
 
 templates = Jinja2Templates(directory="app/templates")
 router_page = APIRouter()
@@ -14,7 +14,7 @@ router_page = APIRouter()
 @router_page.post("/add_page/") # добавление страницы
 async def add_page(session: DBSessionDep, page: PageS):
     page_url = convert_text_for_url(page.page_path)
-    page_db = await Page.add_page(
+    page_db: Page = await Page.add_page(
                     session = session,
                     page_title = page.page_title,
                     page_description = page.page_description,
@@ -22,6 +22,11 @@ async def add_page(session: DBSessionDep, page: PageS):
                     page_content = page.page_content,
                     page_url = page_url
                     )
+    page_db = await Page.get_page_by_url(session, page_url)
+    page.page_title = page_db.page_title
+    page.page_description = page_db.page_description
+    page.page_path = page_db.page_path
+    page.page_content = page_db.page_content
     return page
 
 @router_page.put("/update_page/") # обновление страницы
