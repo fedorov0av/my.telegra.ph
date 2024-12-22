@@ -3,7 +3,7 @@ services:
   my-telegra-ph:
     build: ./
     restart: unless-stopped
-    command: uvicorn app.main:app --host 0.0.0.0 --port 8000
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --proxy-headers --forwarded-allow-ips=*
     expose:
       - "8000"  # Открывает порт внутри сети Docker (не пробрасывает наружу)
     volumes:
