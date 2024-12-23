@@ -12,13 +12,14 @@ templates = Jinja2Templates(directory="app/templates")
 router_page = APIRouter()
 
 @router_page.post("/add_page/") # добавление страницы
-async def add_page(session: DBSessionDep, page: PageS):
-    page_url = convert_text_for_url(page.page_path)
+async def add_page(session: DBSessionDep, page: PageS, request: Request):
+    page_path = convert_text_for_url(page.page_path)
+    page_url = str(request.base_url) + page_path
     page_db: Page = await Page.add_page(
                     session = session,
                     page_title = page.page_title,
                     page_description = page.page_description,
-                    page_path = page.page_path,
+                    page_path = page_path,
                     page_content = page.page_content,
                     page_url = page_url
                     )
@@ -45,7 +46,7 @@ async def update_page(session: DBSessionDep, page: PageS):
     except Exception as e:
         await session.rollback()
         raise HTTPException(status_code=500, detail="Failed to update page") from e
-    return page
+    return page_db
 
 @router_page.get("/{url}") # получение страницы
 async def get_page(session: DBSessionDep, url: str, request: Request):
