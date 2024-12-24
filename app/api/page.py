@@ -28,11 +28,13 @@ async def add_page(session: DBSessionDep, page: PageS, request: Request):
     page.page_description = page_db.page_description
     page.page_path = page_db.page_path
     page.page_content = page_db.page_content
+    page.page_url = page_db.page_url
     return page
 
 @router_page.put("/update_page/") # обновление страницы
-async def update_page(session: DBSessionDep, page: PageS):
-    page_url = convert_text_for_url(page.page_path)
+async def update_page(session: DBSessionDep, page: PageS, request: Request):
+    page_path = convert_text_for_url(page.page_path)
+    page_url = str(request.base_url) + page_path
     page_db: Page = await Page.get_page_by_url(session, page_url)
     if not page_db:
         raise HTTPException(status_code=404, detail="Page not found")
@@ -48,9 +50,10 @@ async def update_page(session: DBSessionDep, page: PageS):
         raise HTTPException(status_code=500, detail="Failed to update page") from e
     return page_db
 
-@router_page.get("/{url}") # получение страницы
-async def get_page(session: DBSessionDep, url: str, request: Request):
-    page_db: Page = await Page.get_page_by_url(session, url)
+@router_page.get("/{page_path}") # получение страницы
+async def get_page(session: DBSessionDep, page_path: str, request: Request):
+    page_url = str(request.base_url) + page_path
+    page_db: Page = await Page.get_page_by_url(session, page_url)
     if not page_db: 
         raise HTTPException(status_code=404, detail="Page not found")
     return templates.TemplateResponse(
