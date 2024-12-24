@@ -10,6 +10,7 @@
 
 - Переименовать **example.env** в **.env**;
 - Заполнить переменные **DB_USER**, **DB_PASSWORD**, **DB_NAME**, **DB_HOST**, **DB_PORT**, **DATABASE_URL**, **DEV** своими значениями;
+- Указать в Caddyfile доменное имя. При запуске Caddy автоматически установит сертификат с [Let's Encrypt](https://letsencrypt.org/);
 
 ### Запуск
 
