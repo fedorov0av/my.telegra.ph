@@ -13,7 +13,7 @@ templates = Jinja2Templates(directory="app/templates")
 router_page = APIRouter()
 
 @router_page.post("/createPage/") # добавление страницы
-async def add_page(session: DBSessionDep, page: PageS, request: Request):
+async def create_page(session: DBSessionDep, page: PageS, request: Request):
     page_path = convert_text_for_url(page.page_path)
     page_url = str(request.base_url) + page_path
     page_db: Page = await Page.add_page(
@@ -33,7 +33,7 @@ async def add_page(session: DBSessionDep, page: PageS, request: Request):
     return page
 
 @router_page.put("/editPage/") # обновление страницы
-async def update_page(session: DBSessionDep, page: PageS, request: Request):
+async def edit_page(session: DBSessionDep, page: PageS, request: Request):
     page_path = convert_text_for_url(page.page_path)
     page_url = str(request.base_url) + page_path
     page_db: Page = await Page.get_page_by_url(session, page_url)
