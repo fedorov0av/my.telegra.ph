@@ -19,6 +19,8 @@ uvicorn = "^0.32.1"
 python-dotenv = "^1.0.1"
 asyncpg = "^0.30.0"
 html-utils = {git = "https://github.com/fedorov0av/html-utils.git"}
+pytest = "^8.3.4"
+pytest-asyncio = "^0.25.2"
 
 [build-system]
 requires = ["poetry-core"]

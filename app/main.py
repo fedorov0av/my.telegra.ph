@@ -14,7 +14,8 @@ DEV = config["DEV"]
 async def not_found_error(request: Request, exc: HTTPException):
     return templates.TemplateResponse(
         request=request, name="404.html",
-        context={"service_name": SERVICE_NAME,}
+        context={"service_name": SERVICE_NAME,},
+        status_code = 404,
     )
 
 templates = Jinja2Templates(directory="app/templates")
