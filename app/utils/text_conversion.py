@@ -21,3 +21,8 @@ def get_date_for_content(date: str) -> str: #  date = '2024-10-25T13:22:57+0000'
     if date[-5:] != T_Z:
         date += T_Z
     return datetime.strptime(date, "%Y-%m-%dT%H:%M:%S%z").strftime("%B %d, %Y") # 'October 25, 2024'
+
+def get_date_for_title() -> str: #  date = '01-26-23'
+    current_datetime = datetime.now()
+    formatted_date = current_datetime.strftime("%m-%d-%y")
+    return formatted_date
