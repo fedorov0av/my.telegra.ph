@@ -4,6 +4,7 @@ from transliterate import translit
 
 
 def convert_text_for_url(text: str) -> str:
+    text = text.strip()  # Удаляем пробелы в начале и конце строки
     # Заменяем пробелы на дефисы и убираем символы, которые не являются буквами или цифрами (кроме пробелов)
     text = re.sub(r'[^\w\s-]', '', text)  # Удаляем все символы, которые не буквы и не цифры
     text = text.replace(" ", "-")  # Заменяем пробелы на дефисы
