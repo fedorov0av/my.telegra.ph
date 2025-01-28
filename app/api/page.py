@@ -6,12 +6,23 @@ from ..schemas.page import PageS, PageList, PageResponse
 from ..secure import get_api_key
 from ..db.models.page import Page
 from ..utils.text_conversion import get_date_for_content, convert_text_for_url, get_date_for_title
-from ..config.consts import SERVICE_NAME
+from ..utils.index_now import IndexNow
+
+from ..config.consts import SERVICE_NAME, INDEXNOW_KEY
 from loguru import logger
 from html_utils import nodes_to_html
 
+
 templates = Jinja2Templates(directory="app/templates")
 router_page = APIRouter()
+
+async def add_index(page_url: str):
+    if INDEXNOW_KEY: 
+        index_now = IndexNow(key=INDEXNOW_KEY, host=page_url)
+        responses = await index_now.async_add_to_index(page_url)
+    for response in responses:
+        if response.status_code != 200:
+            logger.error(f"Failed to add {page_url} to the IndexNow API. Response server: {response}")
 
 @router_page.post("/createPage/", response_model=PageResponse)
 async def create_page(session: DBSessionDep, page: PageS, request: Request, api_key: str = Depends(get_api_key)) -> PageS:
@@ -48,6 +59,7 @@ async def create_page(session: DBSessionDep, page: PageS, request: Request, api_
     page.page_path = page_db.page_path
     page.page_content = page_db.page_content
     page.page_url = page_db.page_url
+    await add_index(page_url)
     return {"ok": True, "result": page}
 
 @router_page.put("/editPage/")

@@ -13,9 +13,9 @@ LOG_DIR = BASE_DIR / "logs"
 MEDIA_DIR = BASE_DIR / 'media'
 DATABASE_DIR = BASE_DIR / "database"
 LOCALES_DIR = BASE_DIR / "src/locales"
+INDEXNOW_KEY = config["INDEXNOW_KEY"]
 
 for DIR in [LOG_DIR, MEDIA_DIR, DATABASE_DIR]:
     DIR.mkdir(exist_ok=True)
-
 
 SERVICE_NAME = 'LinkNote'
