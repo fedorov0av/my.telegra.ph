@@ -13,8 +13,19 @@ from html_utils import nodes_to_html
 templates = Jinja2Templates(directory="app/templates")
 router_page = APIRouter()
 
-@router_page.post("/createPage/", response_model=PageResponse) # добавление страницы
+@router_page.post("/createPage/", response_model=PageResponse)
 async def create_page(session: DBSessionDep, page: PageS, request: Request, api_key: str = Depends(get_api_key)) -> PageS:
+    """
+    Creates a new page based on the request data.
+
+    - session: The database session object.
+    - page: The data to create the page (includes title, description, content, and page path).
+    - request: The HTTP request used to generate the page URL.
+    - api_key: API key for authorization check.
+
+    Returns:
+        - Response with the result of the page creation.
+    """
     page_path = convert_text_for_url(page.page_path)
     logger.info(page.page_content)  
     page_content_html = nodes_to_html(page.page_content)
@@ -39,8 +50,23 @@ async def create_page(session: DBSessionDep, page: PageS, request: Request, api_
     page.page_url = page_db.page_url
     return {"ok": True, "result": page}
 
-@router_page.put("/editPage/") # обновление страницы
+@router_page.put("/editPage/")
 async def edit_page(session: DBSessionDep, page: PageS, request: Request, api_key: str = Depends(get_api_key)) -> PageS:
+    """
+    Updates an existing page in the database.
+
+    - session: The database session object.
+    - page: The new data for the page (includes title, description, content, and page path).
+    - request: The HTTP request used to generate the page URL.
+    - api_key: API key for authorization check.
+
+    Returns:
+        - The updated page data.
+    
+    In case of error:
+        - 404 if the page is not found.
+        - 500 if the update fails.
+    """
     page_path = convert_text_for_url(page.page_path)
     page_url = str(request.base_url) + page_path
     page_db: Page = await Page.get_page_by_url(session, page_url)
@@ -59,8 +85,21 @@ async def edit_page(session: DBSessionDep, page: PageS, request: Request, api_ke
         raise HTTPException(status_code=500, detail="Failed to update page") from e
     return page
 
-@router_page.get("/{page_path}") # получение страницы
+@router_page.get("/{page_path}")
 async def get_page(session: DBSessionDep, page_path: str, request: Request):
+    """
+    Retrieves a page by the specified path and renders it using a template.
+
+    - session: The database session object.
+    - page_path: The path to the page to retrieve.
+    - request: The HTTP request used to generate the page URL.
+
+    Returns:
+        - The HTML page with data from the database.
+    
+    In case of error:
+        - 404 if the page is not found.
+    """
     page_url = str(request.base_url) + page_path
     page_db: Page = await Page.get_page_by_url(session, page_url)
     if not page_db: 
@@ -82,6 +121,16 @@ async def get_page(session: DBSessionDep, page_path: str, request: Request):
 
 @router_page.get("/getPageList/") 
 async def get_page_list(session: DBSessionDep, request: Request, api_key: str = Depends(get_api_key)) -> PageList:
+    """
+    Retrieves a list of all pages in the system.
+
+    - session: The database session object.
+    - request: The HTTP request.
+    - api_key: API key for authorization check.
+
+    Returns:
+        - A list of all pages with their titles and URLs.
+    """
     pages_db: list[Page] = await Page.get_all_pages(session)
     page_list = PageList(page_list=[])
     for page_db in pages_db:
