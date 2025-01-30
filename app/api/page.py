@@ -29,9 +29,11 @@ async def create_page(session: DBSessionDep, page: PageS, request: Request, api_
     """
     Creates a new page based on the request data.
 
-    - session: The database session object.
-    - page: The data to create the page (includes title, description, content, and page path).
-    - request: The HTTP request used to generate the page URL.
+    - page_title (str): The updated title of the page (max length: 300 characters).
+    - page_description (str): The updated description of the page (max length: 300 characters).
+    - page_path (str): The updated path for the page, used to generate the URL (max length: 300 characters).
+    - page_url (Optional[str]): The updated URL for the page, can be left empty if not updating (max length: 300 characters).
+    - page_content (List[Any]): The updated content of the page, typically a list of HTML nodes or text (max length: 10000 characters).
     - api_key: API key for authorization check.
 
     Returns:
@@ -67,9 +69,11 @@ async def edit_page(session: DBSessionDep, page: PageS, request: Request, api_ke
     """
     Updates an existing page in the database.
 
-    - session: The database session object.
-    - page: The new data for the page (includes title, description, content, and page path).
-    - request: The HTTP request used to generate the page URL.
+    - page_title (str): The updated title of the page (max length: 300 characters).
+    - page_description (str): The updated description of the page (max length: 300 characters).
+    - page_path (str): The updated path for the page, used to generate the URL (max length: 300 characters).
+    - page_url (Optional[str]): The updated URL for the page, can be left empty if not updating (max length: 300 characters).
+    - page_content (List[Any]): The updated content of the page, typically a list of HTML nodes or text (max length: 10000 characters).
     - api_key: API key for authorization check.
 
     Returns:
@@ -100,12 +104,6 @@ async def edit_page(session: DBSessionDep, page: PageS, request: Request, api_ke
 @router_page.get("/{page_path}")
 async def get_page(session: DBSessionDep, page_path: str, request: Request):
     """
-    Retrieves a page by the specified path and renders it using a template.
-
-    - session: The database session object.
-    - page_path: The path to the page to retrieve.
-    - request: The HTTP request used to generate the page URL.
-
     Returns:
         - The HTML page with data from the database.
     
@@ -136,8 +134,6 @@ async def get_page_list(session: DBSessionDep, request: Request, api_key: str = 
     """
     Retrieves a list of all pages in the system.
 
-    - session: The database session object.
-    - request: The HTTP request.
     - api_key: API key for authorization check.
 
     Returns:
