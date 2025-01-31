@@ -18,10 +18,11 @@ aiosqlite = "^0.20.0"
 uvicorn = "^0.32.1"
 python-dotenv = "^1.0.1"
 asyncpg = "^0.30.0"
-html-utils = {git = "https://github.com/fedorov0av/html-utils.git"}
+html-utils = {git = "https://github.com/fedorov0av/html-utils.git", rev = "v0.1.0"}
 pytest = "^8.3.4"
 pytest-asyncio = "^0.25.2"
 requests = "^2.32.3"
+indexflow = {git = "https://github.com/fedorov0av/IndexFlow.git", rev = "v0.1.0"}
 
 [build-system]
 requires = ["poetry-core"]

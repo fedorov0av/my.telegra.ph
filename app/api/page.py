@@ -6,7 +6,7 @@ from ..schemas.page import PageS, PageList, PageResponse
 from ..secure import get_api_key
 from ..db.models.page import Page
 from ..utils.text_conversion import get_date_for_content, convert_text_for_url, get_date_for_title
-from ..utils.index_now import IndexNow
+from indexflow import IndexNow
 
 from ..config.consts import SERVICE_NAME, INDEXNOW_KEY
 from loguru import logger
