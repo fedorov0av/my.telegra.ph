@@ -17,12 +17,27 @@ templates = Jinja2Templates(directory="app/templates")
 router_page = APIRouter()
 
 async def add_index(page_url: str):
+    """
+    Asynchronously adds a page URL to the IndexNow API and logs the result.
+
+    Parameters:
+        -page_url : str
+            - The URL to be submitted for indexing.
+
+    Returns:
+        - None
+        
+    In case of error, the function logs a failure message with the response details.
+    """
+    host = IndexNow.get_host_name(page_url, need_http=True)
     if INDEXNOW_KEY: 
-        index_now = IndexNow(key=INDEXNOW_KEY, host=page_url)
+        index_now = IndexNow(key=INDEXNOW_KEY, host=host)
         responses = await index_now.async_add_to_index(page_url)
     for response in responses:
         if response.status_code != 200:
             logger.error(f"Failed to add {page_url} to the IndexNow API. Response server: {response}")
+        else:
+            logger.info(f"Successfully added {page_url} to the IndexNow API")
 
 @router_page.post("/createPage/", response_model=PageResponse)
 async def create_page(session: DBSessionDep, page: PageS, request: Request, api_key: str = Depends(get_api_key)) -> PageS:
