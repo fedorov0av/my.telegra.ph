@@ -29,7 +29,7 @@ services:
       - docker_network
 
   postgres:
-    image: postgres:13
+    image: postgres:13-alpine3.14
     restart: unless-stopped
     environment:
       POSTGRES_USER: ${DB_USER}        # Имя пользователя PostgreSQL
