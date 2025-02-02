@@ -34,7 +34,7 @@ async def add_index(page_url: str):
         index_now = IndexNow(key=INDEXNOW_KEY, host=host)
         responses = await index_now.async_add_to_index(page_url)
     for response in responses:
-        if response.status_code != 200:
+        if response.status_code not in (200, 202):
             logger.error(f"Failed to add {page_url} to the IndexNow API. Response server: {response}")
         else:
             logger.info(f"Successfully added {page_url} to the IndexNow API")
