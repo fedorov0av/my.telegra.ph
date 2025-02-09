@@ -1,46 +1,23 @@
 from fastapi import APIRouter, Request, HTTPException, Depends
 from fastapi.templating import Jinja2Templates
+from loguru import logger
+from html_utils import nodes_to_html
 
 from ..setup import DBSessionDep
 from ..schemas.page import PageS, PageList, PageResponse
 from ..secure import get_api_key
 from ..db.models.page import Page
 from ..utils.text_conversion import get_date_for_content, convert_text_for_url, get_date_for_title
-from indexflow import IndexNow
-
-from ..config.consts import SERVICE_NAME, INDEXNOW_KEY
-from loguru import logger
-from html_utils import nodes_to_html
+from ..config.consts import SERVICE_NAME
+from ..utils.seo import add_index
 
 
 templates = Jinja2Templates(directory="app/templates")
 router_page = APIRouter()
 
-async def add_index(page_url: str):
-    """
-    Asynchronously adds a page URL to the IndexNow API and logs the result.
-
-    Parameters:
-        -page_url : str
-            - The URL to be submitted for indexing.
-
-    Returns:
-        - None
-        
-    In case of error, the function logs a failure message with the response details.
-    """
-    host = IndexNow.get_host_name(page_url, need_http=True)
-    if INDEXNOW_KEY: 
-        index_now = IndexNow(key=INDEXNOW_KEY, host=host)
-        responses = await index_now.async_add_to_index(page_url)
-    for response in responses:
-        if response.status_code not in (200, 202):
-            logger.error(f"Failed to add {page_url} to the IndexNow API. Response server: {response}")
-        else:
-            logger.info(f"Successfully added {page_url} to the IndexNow API")
 
 @router_page.post("/createPage/", response_model=PageResponse)
-async def create_page(session: DBSessionDep, page: PageS, request: Request, api_key: str = Depends(get_api_key)) -> PageS:
+async def create_page(session: DBSessionDep, page: PageS, request: Request, api_key: str = Depends(get_api_key)) -> dict:
     """
     Creates a new page based on the request data.
 
@@ -54,10 +31,9 @@ async def create_page(session: DBSessionDep, page: PageS, request: Request, api_
     Returns:
         - Response with the result of the page creation.
     """
-    page_path = convert_text_for_url(page.page_path)
-    logger.info(page.page_content)  
+    page_path = convert_text_for_url(page.page_path) # Convert the page path to a URL-friendly format
     page_content_html = nodes_to_html(page.page_content)
-    formatted_date = '-' + get_date_for_title()
+    formatted_date = '-' + get_date_for_title() # Add the current date to the page path
     page_url = f"{str(request.base_url)}{page_path}{formatted_date}"
     check_page_db = await Page.get_page_by_url(session, page_url)
     if check_page_db:

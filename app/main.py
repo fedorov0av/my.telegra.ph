@@ -6,7 +6,8 @@ from loguru import logger
 
 from app import setup
 from app.api.page import router_page
-from app.api.others import router_others
+from app.api.seo import router_seo
+from app.api.main_page import router_main_page
 from .config.consts import config
 from app.config.consts import SERVICE_NAME
 
@@ -33,7 +34,8 @@ app.mount("/static_js", StaticFiles(directory="app/templates/static/js"), name="
 app.mount("/static_css", StaticFiles(directory="app/templates/static/css"), name="static_css")
 app.mount("/static_images", StaticFiles(directory="app/templates/static/images"), name="static_images")
 
-app.include_router(router_others)
+app.include_router(router_main_page)
+app.include_router(router_seo)
 app.include_router(router_page)
 
 setup.init_logging(setup.log.LogSettings())
