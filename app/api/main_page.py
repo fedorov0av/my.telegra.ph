@@ -40,6 +40,7 @@ async def set_main_page(session: DBSessionDep, page_content: PageContent, reques
                         page_content = page_content_html,
                         page_url = page_url
                         )
+        page_db: Page = await Page.get_page_by_url(session, page_url)
         await add_index(page_url)
     else:
         page_db.page_content = page_content_html
