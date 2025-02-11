@@ -5,7 +5,7 @@ services:
     restart: unless-stopped
     command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --proxy-headers --forwarded-allow-ips=*
     expose:
-      - "8000"  # Открывает порт внутри сети Docker (не пробрасывает наружу)
+      - "8000"
     volumes:
       - ./logs:/app/logs
       - ./database:/app/database
@@ -16,6 +16,16 @@ services:
     depends_on:
       postgres:
         condition: service_started
+
+  celery-worker:
+    build: ./
+    restart: unless-stopped
+    command: celery -A worker worker --loglevel=info --logfile=logs/celery.log
+    depends_on:
+      - my-telegra-ph
+      - redis
+    networks:
+      - docker_network
 
   caddy:
     image: caddy:2.8.4
@@ -42,10 +52,22 @@ services:
     networks:
       - docker_network
 
+  redis:
+    image: redis:7.4.2-alpine
+    restart: unless-stopped
+    expose:
+      - "6379"
+    volumes:
+      - ./database/redis_data:/var/lib/redis/data
+    networks:
+      - docker_network
+
 networks:
   docker_network:
     driver: bridge
 
 volumes:
   postgres_data:
+    driver: local
+  redis_data:
     driver: local

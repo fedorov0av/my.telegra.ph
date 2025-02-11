@@ -10,7 +10,7 @@ from ..db.models.page import Page
 from ..utils.text_conversion import get_date_for_content, convert_text_for_url, get_date_for_title
 from ..config.consts import SERVICE_NAME
 from ..utils.seo import add_index
-
+from ..worker import celery_add_index
 
 templates = Jinja2Templates(directory="app/templates")
 router_page = APIRouter()
@@ -52,7 +52,9 @@ async def create_page(session: DBSessionDep, page: PageS, request: Request, api_
     page.page_path = page_db.page_path
     page.page_content = page_db.page_content
     page.page_url = page_db.page_url
-    await add_index(page_url)
+
+    #await add_index(page_url)
+    celery_add_index.delay(page_url)
     return {"ok": True, "result": page}
 
 @router_page.put("/editPage/")
