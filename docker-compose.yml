@@ -8,7 +8,6 @@ services:
       - "8000"
     volumes:
       - ./logs:/app/logs
-      - ./database:/app/database
     networks:
       - docker_network
     environment:
@@ -20,7 +19,9 @@ services:
   celery-worker:
     build: ./
     restart: unless-stopped
-    command: celery -A worker worker --loglevel=info --logfile=logs/celery.log
+    command: celery -A app.tasks worker --loglevel=info --logfile=logs/celery.log
+    volumes:
+      - ./logs:/app/logs
     depends_on:
       - my-telegra-ph
       - redis
