@@ -1,0 +1,10 @@
+FROM ghcr.io/withlogicco/poetry:1.7.0-python-3.12-slim
+WORKDIR /app
+COPY pyproject-celery.toml ./pyproject.toml
+RUN poetry install --no-root
+COPY app/tasks.py app/tasks.py
+COPY app/config/consts.py app/config/consts.py
+COPY app/utils/seo.py app/utils/seo.py
+COPY .env .env
+COPY README.md README.md
+ENV PYTHONPATH=/app

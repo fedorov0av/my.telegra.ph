@@ -17,7 +17,9 @@ services:
         condition: service_started
 
   celery-worker:
-    build: ./
+    build:
+      context: ./
+      dockerfile: ./Dockerfile-celery
     restart: unless-stopped
     command: celery -A app.tasks worker --loglevel=info --logfile=logs/celery.log
     volumes:
