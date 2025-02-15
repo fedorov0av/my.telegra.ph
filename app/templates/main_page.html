@@ -25,28 +25,52 @@
     <link rel="shortcut icon" href="{{ url_for('static_images', path='favicon.ico?1') }}" type="image/x-icon">
     <link rel="icon" type="image/png" href="{{ url_for('static_images', path='favicon.png?1') }}" sizes="16x16">
     <link rel="icon" type="image/png" href="{{ url_for('static_images', path='favicon_2x.png?1') }}" sizes="32x32">
-    <link href="{{ url_for('static_css', path='quill.core.min.css') }}" rel="stylesheet">
-    <link href="{{ url_for('static_css', path='core.min.css?47') }}" rel="stylesheet">
+    <link href="{{ url_for('static_css', path='bulma.min.css?1') }}" rel="stylesheet">
   </head>
   <body>
-    <div class="tl_page_wrap">
-      <div class="tl_page">
-        <main class="tl_article">
-          <header class="tl_article_header" dir="auto">
-            <h1>{{ title }}</h1>
-            <address>
-              <a rel="author"></a><!--
-           --><time datetime="{{ published_time }}">{{ date }}</time>
-            </address>
-          </header>
-          <article id="_tl_editor" class="tl_article_content"><h1>{{ title }}<br></h1><address><br></address>{{ html_content | safe }}</article>
-        </main>
-      </div>
-    </div>
-    <script src="{{ url_for('static_js', path='jquery.min.js') }}"></script>
-    <script src="{{ url_for('static_js', path='jquery.selection.min.js') }}"></script>
-    <script src="{{ url_for('static_js', path='autosize.min.js') }}"></script>
-    <script src="{{ url_for('static_js', path='load-image.all.min.js?1') }}"></script>
-    <script src="{{ url_for('static_js', path='quill.min.js?10') }}"></script>
+    <nav class="navbar" role="navigation" aria-label="main navigation">
+      
+        <div>
+            <a class="navbar-item">
+              Главная
+            </a>
+      
+            <a class="navbar-item">
+              Новости
+            </a>
+      
+            <div class="navbar-item has-dropdown is-hoverable">
+              <a class="navbar-link">
+                Больше
+              </a>
+      
+              <div class="navbar-dropdown">
+                <a class="navbar-item">
+                  О проекте
+                </a>
+                <a class="navbar-item">
+                  Контакты
+                </a>
+                <hr class="navbar-divider">
+                <a class="navbar-item">
+                  Быстрая связь
+                </a>
+              </div>
+            </div>
+        </div>
+      </nav>
   </body>
+
+  <style>
+    /* body {
+        margin: 0;
+        display: flex;
+        justify-content: center;
+        height: 100vh;
+        background-color: #f5f5f5;
+    } */
+
+  </style>
+    <script src="{{ url_for('static_js', path='vue.global.prod.js?1') }}"></script>
+
 </html>

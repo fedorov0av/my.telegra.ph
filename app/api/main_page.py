@@ -61,7 +61,7 @@ async def get_main_page(session: DBSessionDep, request: Request,):
     """
     page = await Page.get_page_by_url(session, str(request.base_url))
     return templates.TemplateResponse(
-        request=request, name="base.html",
+        request=request, name="main_page.html",
         context={
             "title_tag": SERVICE_NAME,
             "title": SERVICE_NAME,
