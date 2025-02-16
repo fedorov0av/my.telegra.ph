@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html class="has-navbar-fixed-top">
   <head>
     <meta charset="utf-8">
     <title>{{ title_tag }}</title>
@@ -28,40 +28,104 @@
     <link href="{{ url_for('static_css', path='bulma.min.css?1') }}" rel="stylesheet">
   </head>
   <body>
-    <nav class="navbar" role="navigation" aria-label="main navigation">
-      
-        <div>
-            <a class="navbar-item">
-              Главная
+    
+
+    <nav class="navbar is-fixed-top" role="navigation" aria-label="main navigation">
+      <div class="navbar-brand">
+        <a class="navbar-item" href="/">
+          <image style="size: 100vh;" src="{{ url_for('static_images', path=title+'.svg?1') }}">
+        </a>
+    
+        <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbarBasic">
+          <span aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
+        </a>
+      </div>
+    
+      <div id="navbarBasic" class="navbar-menu">
+        <div class="navbar-start">
+          <a class="navbar-item" href="/">
+            Главная
+          </a>
+    
+          <a class="navbar-item">
+            Новости
+          </a>
+          
+          <div class="navbar-item has-dropdown is-hoverable">
+            <a class="navbar-link">
+              Больше
             </a>
-      
-            <a class="navbar-item">
-              Новости
-            </a>
-      
-            <div class="navbar-item has-dropdown is-hoverable">
-              <a class="navbar-link">
-                Больше
+    
+            <div class="navbar-dropdown">
+              <a class="navbar-item">
+                О проекте
               </a>
-      
-              <div class="navbar-dropdown">
-                <a class="navbar-item">
-                  О проекте
-                </a>
-                <a class="navbar-item">
-                  Контакты
-                </a>
-                <hr class="navbar-divider">
-                <a class="navbar-item">
-                  Быстрая связь
-                </a>
-              </div>
+              <hr class="navbar-divider">
+              <a class="navbar-item">
+                Контакты
+              </a>
             </div>
+          </div>
         </div>
-      </nav>
+    
+        <!-- <div class="navbar-end">
+          <div class="navbar-item">
+            <div class="buttons">
+              <a class="button is-primary">
+                <strong>Sign up</strong>
+              </a>
+              <a class="button is-light">
+                Log in
+              </a>
+            </div>
+          </div>
+        </div> -->
+      </div>
+    </nav>
+
+    <div id="topPost">
+      {{ topPost }}
+    </div>
+    <div id="otherPosts">
+      Пока
+    </div>
+
+
+
+    <nav class="pagination is-centered" role="navigation" aria-label="pagination">
+      <a href="#" class="pagination-previous">Назад</a>
+      <a href="#" class="pagination-next">Вперёд</a>
+      <ul class="pagination-list">
+        <li><a href="#" class="pagination-link" aria-label="Goto page 1">1</a></li>
+        <li><span class="pagination-ellipsis">&hellip;</span></li>
+        <li><a href="#" class="pagination-link" aria-label="Goto page 45">45</a></li>
+        <li>
+          <a
+            class="pagination-link is-current"
+            aria-label="Page 46"
+            aria-current="page"
+            >46</a
+          >
+        </li>
+        <li><a href="#" class="pagination-link" aria-label="Goto page 47">47</a></li>
+        <li><span class="pagination-ellipsis">&hellip;</span></li>
+        <li><a href="#" class="pagination-link" aria-label="Goto page 86">86</a></li>
+      </ul>
+    </nav>
+
   </body>
 
   <style>
+    div#topPost {
+        margin: 0;
+        display: flex;
+        justify-content: center;
+        height: 30vh;
+        width: 100%;
+    }
     /* body {
         margin: 0;
         display: flex;

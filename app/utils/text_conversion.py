@@ -1,7 +1,8 @@
 import re
+import drawsvg as draw
 from datetime import datetime
 from transliterate import translit
-
+from ..config.consts import GOOGLE_FONTNAME_LOGO, PATH_LOGO_SVG
 
 def convert_text_for_url(text: str) -> str:
     """
@@ -60,3 +61,24 @@ def get_date_for_title() -> str:
     current_datetime = datetime.now()
     formatted_date = current_datetime.strftime("%m-%d-%y")
     return formatted_date
+
+def save_logo_svg_from_text(text: str) -> draw.Drawing:
+    """
+    Converts text to a logo SVG image.
+
+    - Converts the text into a drawing object using the drawsvg library.
+
+    Args:
+        - text: The text to be converted into a logo SVG image.
+
+    Returns:
+        - The drawing object representing the logo SVG image.
+    """
+    uppercase_count = sum(1 for c in text if c.isupper())
+    lowercase_count = sum(1 for c in text if c.islower())
+    width = lowercase_count * 16 + uppercase_count * 20
+    height = 50
+    d = draw.Drawing(width, height, origin='center')
+    d.embed_google_font(GOOGLE_FONTNAME_LOGO, text=set(text))
+    d.append(draw.Text(text, 35, 0, 0, center=True, font_family=GOOGLE_FONTNAME_LOGO))
+    d.save_svg(PATH_LOGO_SVG)

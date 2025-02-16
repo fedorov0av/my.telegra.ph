@@ -59,6 +59,8 @@ async def get_main_page(session: DBSessionDep, request: Request,):
     In case of error:
         - Return default page if the main page is not found.
     """
+    pages: list[Page] = await Page.get_all_pages(session)
+    print(pages[-1])
     page = await Page.get_page_by_url(session, str(request.base_url))
     return templates.TemplateResponse(
         request=request, name="main_page.html",
@@ -71,5 +73,5 @@ async def get_main_page(session: DBSessionDep, request: Request,):
             "modified_time": SERVICE_NAME,
             "url": SERVICE_NAME,
             "date": SERVICE_NAME,
-            "html_content": page.page_content if page else HTML_MAIN_PAGE_CONT_NOT_FOUND,
+            "topPost": pages[-1].page_content if pages[-1] else 'No content',
             })
