@@ -62,6 +62,12 @@ async def get_main_page(session: DBSessionDep, request: Request,):
     pages: list[Page] = await Page.get_all_pages(session)
     print(pages[-1])
     page = await Page.get_page_by_url(session, str(request.base_url))
+    page_cont = pages[-1].page_content if pages[-1] else 'No content'
+    page_image = page_cont.split('<img src="')[1].split('"/>')[0]
+    print(page_image)
+    page_cont = page_cont.split('</p>')[1]
+    print(page_cont)
+
     return templates.TemplateResponse(
         request=request, name="main_page.html",
         context={
@@ -73,5 +79,6 @@ async def get_main_page(session: DBSessionDep, request: Request,):
             "modified_time": SERVICE_NAME,
             "url": SERVICE_NAME,
             "date": SERVICE_NAME,
-            "topPost": pages[-1].page_content if pages[-1] else 'No content',
+            "topPostImage": page_image,
+            "topPostContent": page_cont,
             })

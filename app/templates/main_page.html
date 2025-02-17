@@ -87,7 +87,16 @@
     </nav>
 
     <div id="topPost">
-      {{ topPost }}
+      <div class="grid">
+        <div class="cell">
+          <figure class="image is-640x480">
+            <image style="height: 50vh; width: 50%;" src="{{ topPostImage}}">
+          </figure>
+        </div>
+        <div class="cell">
+          {{ topPostContent | safe }}
+        </div>
+      </div>
     </div>
     <div id="otherPosts">
       Пока
@@ -121,9 +130,9 @@
   <style>
     div#topPost {
         margin: 0;
-        display: flex;
+        /* display: flex; */
         justify-content: center;
-        height: 30vh;
+        /* height: 30vh; */
         width: 100%;
     }
     /* body {
