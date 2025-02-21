@@ -1,5 +1,5 @@
-from .page import Page
+from .page import PageDB
 
 __all__ = (
-    "Page",
+    "PageDB",
 )

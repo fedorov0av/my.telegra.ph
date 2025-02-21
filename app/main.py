@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
+from fastapi_pagination import add_pagination
 from loguru import logger
 
 from app import setup
@@ -16,6 +17,7 @@ if DEV:
 else:
     app = FastAPI(docs_url=None, redoc_url=None, exception_handlers=setup.exception_handlers)
 
+add_pagination(app)
 app.mount("/static_js", StaticFiles(directory="app/templates/static/js"), name="static_js")
 app.mount("/static_css", StaticFiles(directory="app/templates/static/css"), name="static_css")
 app.mount("/static_images", StaticFiles(directory="app/templates/static/images"), name="static_images")

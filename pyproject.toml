@@ -26,6 +26,7 @@ indexflow = {git = "https://github.com/fedorov0av/IndexFlow.git", rev = "v0.1.1"
 celery = "^5.4.0"
 redis = "^5.2.1"
 drawsvg = "^2.4.0"
+fastapi-pagination = "^0.12.34"
 
 [build-system]
 requires = ["poetry-core"]

@@ -6,13 +6,13 @@ from html_utils import nodes_to_html
 from ..setup import DBSessionDep
 from ..schemas.page import PageS, PageList, PageResponse
 from ..secure import get_api_key
-from ..db.models.page import Page
+from ..db.models.page import PageDB
 from ..utils.text_conversion import get_date_for_content, convert_text_for_url, get_date_for_title
 from ..config.consts import SERVICE_NAME
 from ..tasks import add_index
 
 templates = Jinja2Templates(directory="app/templates")
-router_page = APIRouter()
+router_page = APIRouter(tags=["Pages"])
 
 
 @router_page.post("/createPage/", response_model=PageResponse)
@@ -34,10 +34,10 @@ async def create_page(session: DBSessionDep, page: PageS, request: Request, api_
     page_content_html = nodes_to_html(page.page_content)
     formatted_date = '-' + get_date_for_title() # Add the current date to the page path
     page_url = f"{str(request.base_url)}{page_path}{formatted_date}"
-    check_page_db = await Page.get_page_by_url(session, page_url)
+    check_page_db = await PageDB.get_page_by_url(session, page_url)
     if check_page_db:
         raise HTTPException(status_code=400, detail="Page with this url already exists")
-    page_db: Page = await Page.add_page(
+    page_db: PageDB = await PageDB.add_page(
                     session = session,
                     page_title = f"{page.page_title}{formatted_date}",
                     page_description = f"{page.page_description}",
@@ -45,7 +45,7 @@ async def create_page(session: DBSessionDep, page: PageS, request: Request, api_
                     page_content = page_content_html,
                     page_url = page_url
                     )
-    page_db = await Page.get_page_by_url(session, page_url)
+    page_db = await PageDB.get_page_by_url(session, page_url)
     page.page_title = page_db.page_title
     page.page_description = page_db.page_description
     page.page_path = page_db.page_path
@@ -75,7 +75,7 @@ async def edit_page(session: DBSessionDep, page: PageS, request: Request, api_ke
     """
     page_path = convert_text_for_url(page.page_path)
     page_url = str(request.base_url) + page_path
-    page_db: Page = await Page.get_page_by_url(session, page_url)
+    page_db: PageDB = await PageDB.get_page_by_url(session, page_url)
     if not page_db:
         raise HTTPException(status_code=404, detail="Page not found")
     page_db.page_title = page.page_title
@@ -101,7 +101,7 @@ async def get_page(session: DBSessionDep, page_path: str, request: Request):
         - 404 if the page is not found.
     """
     page_url = str(request.base_url) + page_path
-    page_db: Page = await Page.get_page_by_url(session, page_url)
+    page_db: PageDB = await PageDB.get_page_by_url(session, page_url)
     if not page_db: 
         raise HTTPException(status_code=404, detail="Page not found")
     return templates.TemplateResponse(
@@ -129,7 +129,7 @@ async def get_page_list(session: DBSessionDep, request: Request, api_key: str = 
     Returns:
         - A list of all pages with their titles and URLs.
     """
-    pages_db: list[Page] = await Page.get_all_pages(session)
+    pages_db: list[PageDB] = await PageDB.get_all_pages(session)
     page_list = PageList(page_list=[])
     for page_db in pages_db:
         page_list.page_list.append({

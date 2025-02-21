@@ -23,3 +23,6 @@ class PageList(BaseModel):
 
 class PageContent(BaseModel):
     page_content: List[Any] = Field(..., max_length=10000)
+
+class PageOut(PageS):
+    page_content: str = Field(..., max_length=6096)
