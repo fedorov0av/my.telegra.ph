@@ -3,7 +3,7 @@ from fastapi.templating import Jinja2Templates
 from loguru import logger
 from typing import Any
 from html_utils import nodes_to_html
-from fastapi_pagination import Page, add_pagination
+from fastapi_pagination import Page, pagination_ctx, Params, set_params, set_page
 from fastapi_pagination.ext.sqlalchemy import paginate
 from sqlalchemy import select
 
@@ -17,7 +17,6 @@ from ..utils.seo import add_index
 
 router_main_page = APIRouter(tags=["Main page"])
 templates = Jinja2Templates(directory="app/templates")
-
 @router_main_page.post("/setMainPage/", response_model=PageResponseMainS)
 async def set_main_page(session: DBSessionDep, page_content: PageContent, request: Request, api_key: str = Depends(get_api_key)):
     """
@@ -55,7 +54,7 @@ async def set_main_page(session: DBSessionDep, page_content: PageContent, reques
     return {"ok": True, "result": page}
 
 @router_main_page.get("/")
-async def get_main_page(session: DBSessionDep, request: Request,):
+async def get_main_page(session: DBSessionDep, request: Request, page: int = 1, size: int = 10):
     """
     Returns:
         - The HTML main page.
@@ -63,13 +62,15 @@ async def get_main_page(session: DBSessionDep, request: Request,):
     In case of error:
         - Return default page if the main page is not found.
     """
-    pages: list[PageDB] = await PageDB.get_all_pages(session)
-    print(pages[-1])
-    page = await PageDB.get_page_by_url(session, str(request.base_url))
-    page_cont = pages[-1].page_content if pages[-1] else 'No content'
+    set_page(Page[PageDB])
+    set_params(Params(page=page, size=size))
+    result: Page[PageDB] = await paginate(session, select(PageDB).order_by(PageDB.id.desc()), subquery_count=False)
+    logger.info(result)
+    page_db = result.items[0]
+    print(page_db)
+    page_cont = page_db.page_content if page_db else 'No content'
     page_image = page_cont.split('<img src="')[1].split('"/>')[0]
     page_cont = page_cont.split('</p>')[1]
-
     return templates.TemplateResponse(
         request=request, name="main_page.html",
         context={
