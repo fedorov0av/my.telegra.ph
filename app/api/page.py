@@ -24,6 +24,7 @@ async def create_page(session: DBSessionDep, page: PageS, request: Request, api_
     - page_description (str): The updated description of the page (max length: 300 characters).
     - page_path (str): The updated path for the page, used to generate the URL (max length: 300 characters).
     - page_url (Optional[str]): The updated URL for the page, can be left empty if not updating (max length: 300 characters).
+    - page_media (Optional[str]): The updated media for the page, can be left empty if not updating (max length: 300 characters).
     - page_content (List[Any]): The updated content of the page, typically a list of HTML nodes or text (max length: 10000 characters).
     - api_key: API key for authorization check.
 
@@ -42,6 +43,7 @@ async def create_page(session: DBSessionDep, page: PageS, request: Request, api_
                     page_title = f"{page.page_title}{formatted_date}",
                     page_description = f"{page.page_description}",
                     page_path = f"{page_path}{formatted_date}",
+                    page_media = page.page_media,
                     page_content = page_content_html,
                     page_url = page_url
                     )
@@ -49,6 +51,7 @@ async def create_page(session: DBSessionDep, page: PageS, request: Request, api_
     page.page_title = page_db.page_title
     page.page_description = page_db.page_description
     page.page_path = page_db.page_path
+    page.page_media = page_db.page_media
     page.page_content = page_db.page_content
     page.page_url = page_db.page_url
     add_index.delay(page_url)
@@ -81,6 +84,7 @@ async def edit_page(session: DBSessionDep, page: PageS, request: Request, api_ke
     page_db.page_title = page.page_title
     page_db.page_description = page.page_description
     page_db.page_path = page.page_path
+    page_db.page_media = page.page_media
     page_db.page_content = page.page_content
     page_db.page_url = page_url
     page.page_url = page_url
@@ -102,6 +106,7 @@ async def get_page(session: DBSessionDep, page_path: str, request: Request):
     """
     page_url = str(request.base_url) + page_path
     page_db: PageDB = await PageDB.get_page_by_url(session, page_url)
+    page_media = '<p><image src="'+page_db.page_media+'"></p>'
     if not page_db: 
         raise HTTPException(status_code=404, detail="Page not found")
     return templates.TemplateResponse(
@@ -115,7 +120,7 @@ async def get_page(session: DBSessionDep, page_path: str, request: Request):
             "modified_time": page_db.updated_at,
             "url": page_db.page_url,
             "date": get_date_for_content(page_db.created_at),
-            "html_content": page_db.page_content,
+            "html_content": page_media+page_db.page_content,
             }
     )
 

@@ -30,16 +30,14 @@ async def set_main_page(session: DBSessionDep, page_content: PageContent, reques
     """
     page_content_html = nodes_to_html(page_content.page_content)
     page_url = str(request.base_url)
-    logger.info(f"Set main page : {page_url}")
     page_db: PageDB = await PageDB.get_page_by_url(session, page_url)
-    logger.info(f"page_db : {page_db}")
-
     if not page_db:
         page_db: PageDB = await PageDB.add_page(
                         session = session,
                         page_title = f"{SERVICE_NAME}",
                         page_description = f"{SERVICE_NAME}",
                         page_path = f"{SERVICE_NAME}",
+                        page_media = page_content.page_media,
                         page_content = page_content_html,
                         page_url = page_url
                         )
@@ -68,9 +66,8 @@ async def get_main_page(session: DBSessionDep, request: Request, page: int = 1, 
     logger.info(result)
     page_db = result.items[0]
     print(page_db)
-    page_cont = page_db.page_content if page_db else 'No content'
-    page_image = page_cont.split('<img src="')[1].split('"/>')[0]
-    page_cont = page_cont.split('</p>')[1]
+    page_image = page_db.page_media
+    page_cont = page_db.page_content
     return templates.TemplateResponse(
         request=request, name="main_page.html",
         context={
