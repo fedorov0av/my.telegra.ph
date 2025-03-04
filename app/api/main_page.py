@@ -63,11 +63,10 @@ async def get_main_page(session: DBSessionDep, request: Request, page: int = 1, 
     set_page(Page[PageDB])
     set_params(Params(page=page, size=size))
     result: Page[PageDB] = await paginate(session, select(PageDB).order_by(PageDB.id.desc()), subquery_count=False)
+    last_page: PageDB = await PageDB.get_last_page(session)
     logger.info(result)
-    page_db = result.items[0]
-    print(page_db)
-    page_image = page_db.page_media
-    page_cont = page_db.page_content
+    page_image = last_page.page_media
+    page_cont = last_page.page_content
     return templates.TemplateResponse(
         request=request, name="main_page.html",
         context={
@@ -81,6 +80,13 @@ async def get_main_page(session: DBSessionDep, request: Request, page: int = 1, 
             "date": SERVICE_NAME,
             "topPostImage": page_image,
             "topPostContent": page_cont,
+            "otherPosts": result,
+            "pages": {
+                "total": result.total,
+                "page": result.page,
+                "size": result.size,
+                "pages": result.pages
+            }
             })
 
 @router_main_page.get("/pages", response_model=Page[PageOut])

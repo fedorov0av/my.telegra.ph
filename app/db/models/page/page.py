@@ -40,3 +40,10 @@ class PageDB(Base, TimestampMixin):
         result = await session.scalars(query)
         pages_db = result.all()
         return pages_db
+    
+    @staticmethod
+    async def get_last_page(session: AsyncSession) -> PageDB | None:
+        query = select(PageDB).order_by(PageDB.id.desc()).limit(1)
+        last_page = await session.scalars(query)
+        last_page = last_page.one_or_none()
+        return last_page
