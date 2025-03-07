@@ -100,24 +100,14 @@
     </div>
     <div id="otherPosts">
       <div class="columns">
-        <div class="column">
-          <image style="height: 100vh; width: 100%;" src="{{ topPostImage}}"></image>
-        </div>
-        <div class="column">
-          {{ topPostContent | safe }}
-        </div>
-        <div class="column">
-          <image style="height: 100vh; width: 100%;" src="{{ topPostImage}}"></image>
-        </div>
-        <div class="column">
-          {{ topPostContent | safe }}
-        </div>
-        <div class="column">
-          <image style="height: 100vh; width: 100%;" src="{{ topPostImage}}"></image>
-        </div>
-        <div class="column">
-          {{ topPostContent | safe }}
-        </div>
+        {% for post in otherPosts %}
+          <div class="column">
+            <image style="height: 100vh; width: 100%;" src="{{ post.page_media }}"></image>
+          </div>
+          <div class="column">
+            {{ post.page_content | safe }}
+          </div>
+        {% endfor %}
       </div>
     </div>
 

@@ -52,7 +52,7 @@ async def set_main_page(session: DBSessionDep, page_content: PageContent, reques
     return {"ok": True, "result": page}
 
 @router_main_page.get("/")
-async def get_main_page(session: DBSessionDep, request: Request, page: int = 1, size: int = 10):
+async def get_main_page(session: DBSessionDep, request: Request, page: int = 1, size: int = 4):
     """
     Returns:
         - The HTML main page.
@@ -64,7 +64,7 @@ async def get_main_page(session: DBSessionDep, request: Request, page: int = 1, 
     set_params(Params(page=page, size=size))
     result: Page[PageDB] = await paginate(session, select(PageDB).order_by(PageDB.id.desc()), subquery_count=False)
     last_page: PageDB = await PageDB.get_last_page(session)
-    logger.info(result)
+    logger.info(result.items)
     page_image = last_page.page_media
     page_cont = last_page.page_content
     return templates.TemplateResponse(
@@ -80,7 +80,7 @@ async def get_main_page(session: DBSessionDep, request: Request, page: int = 1, 
             "date": SERVICE_NAME,
             "topPostImage": page_image,
             "topPostContent": page_cont,
-            "otherPosts": result,
+            "otherPosts": result.items,
             "pages": {
                 "total": result.total,
                 "page": result.page,
