@@ -67,6 +67,7 @@ async def get_main_page(session: DBSessionDep, request: Request, page: int = 1, 
     logger.info(result.items)
     page_image = last_page.page_media
     page_cont = last_page.page_content
+    page_url = last_page.page_url
     return templates.TemplateResponse(
         request=request, name="main_page.html",
         context={
@@ -74,12 +75,10 @@ async def get_main_page(session: DBSessionDep, request: Request, page: int = 1, 
             "title": SERVICE_NAME,
             "service_name": SERVICE_NAME,
             "description": SERVICE_NAME,
-            "published_time": SERVICE_NAME,
-            "modified_time": SERVICE_NAME,
-            "url": SERVICE_NAME,
-            "date": SERVICE_NAME,
-            "topPostImage": page_image,
-            "topPostContent": page_cont,
+            "published_time": last_page.created_at,
+            "modified_time": last_page.updated_at,
+            "max_length": 250,
+            "last_page": last_page,
             "otherPosts": result.items,
             "pages": {
                 "total": result.total,
