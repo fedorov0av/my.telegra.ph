@@ -1,0 +1,21 @@
+<div id="topPost">
+  <div class="columns">
+    <div class="column">
+      <figure class="image">
+        <image
+          style="height: 100vh; width: 100%"
+          src="{{ last_page.page_media }}"
+        />
+      </figure>
+    </div>
+    <div class="column">
+      {% set last_page_content = last_page.page_content[:max_length] %} {% set
+      last_char_teg_open = last_page_content.rfind("<") %} {% set
+      last_char_teg_close = last_page_content.rfind(">") %} {% if
+      last_char_teg_open != -1 and last_char_teg_open < last_char_teg_close %}
+      {{ last_page_content | safe }} {% else %} {{
+      last_page_content[:last_char_teg_open] | safe }} {% endif %} ...
+      <a href="{{ last_page.page_url }}">Читать далее</a>
+    </div>
+  </div>
+</div>

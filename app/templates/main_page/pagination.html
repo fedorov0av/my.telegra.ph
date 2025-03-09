@@ -1,0 +1,60 @@
+<nav
+  class="pagination is-centered"
+  role="navigation"
+  aria-label="pagination"
+>
+  <a
+    href="#"
+    class="pagination-previous"
+    >Назад</a
+  >
+  <a
+    href="#"
+    class="pagination-next"
+    >Вперёд</a
+  >
+  <ul class="pagination-list">
+    <li>
+      <a
+        href="#"
+        class="pagination-link"
+        aria-label="Goto page 1"
+        >1</a
+      >
+    </li>
+    <li><span class="pagination-ellipsis">&hellip;</span></li>
+    <li>
+      <a
+        href="#"
+        class="pagination-link"
+        aria-label="Goto page 45"
+        >{{ pages.page - 1 }}</a
+      >
+    </li>
+    <li>
+      <a
+        class="pagination-link is-current"
+        aria-label="Page 46"
+        aria-current="page"
+        >{{ pages.page }}</a
+      >
+    </li>
+    <li>
+      <a
+        href="#"
+        class="pagination-link"
+        aria-label="Goto page 47"
+        >{{ pages.page + 1 }}</a
+      >
+    </li>
+    <li><span class="pagination-ellipsis">&hellip;</span></li>
+    <li>
+      <a
+        href="#"
+        class="pagination-link"
+        aria-label="Goto page 86"
+        >{{ pages.total }}</a
+      >
+    </li>
+  </ul>
+</nav>

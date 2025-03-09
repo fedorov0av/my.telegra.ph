@@ -115,7 +115,7 @@
           <image
             style="size: 100vh"
             src="{{ url_for('static_images', path=title+'.svg?1') }}"
-          ></image>
+          >
         </a>
 
         <a
@@ -143,12 +143,9 @@
           >
             Главная
           </a>
-
           <a class="navbar-item"> Новости </a>
-
           <div class="navbar-item has-dropdown is-hoverable">
             <a class="navbar-link"> Больше </a>
-
             <div class="navbar-dropdown">
               <a class="navbar-item"> О проекте </a>
               <hr class="navbar-divider" />
@@ -170,7 +167,12 @@
           </figure>
         </div>
         <div class="column">
-          {{ last_page.page_content[:max_length] | safe }}...
+          {% set last_page_content = last_page.page_content[:max_length] %} {%
+          set last_char_teg_open = last_page_content.rfind("<") %} {% set
+          last_char_teg_close = last_page_content.rfind(">") %} {% if
+          last_char_teg_open != -1 and last_char_teg_open < last_char_teg_close
+          %} {{ last_page_content | safe }} {% else %} {{
+          last_page_content[:last_char_teg_open] | safe }} {% endif %}...
           <a href="{{ last_page.page_url }}">Читать далее</a>
         </div>
       </div>
@@ -185,7 +187,12 @@
           ></image>
         </div>
         <div class="column">
-          {{ post.page_content[:max_length] | safe }} ...
+          {% set post_content = post.page_content[:max_length] %} {% set
+          post_char_tag_open = post_content.rfind("<") %} {% set
+          post_char_tag_close = post_content.rfind(">") %} {% if
+          post_char_tag_open != -1 and post_char_tag_open < post_char_tag_close
+          %} {{ post_content | safe }} {% else %} {{
+          post_content[:post_char_tag_open] | safe }} {% endif %}...
           <a href="{{ post.page_url }}">Читать далее</a>
         </div>
         {% endfor %}

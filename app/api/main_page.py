@@ -69,7 +69,7 @@ async def get_main_page(session: DBSessionDep, request: Request, page: int = 1, 
     page_cont = last_page.page_content
     page_url = last_page.page_url
     return templates.TemplateResponse(
-        request=request, name="main_page.html",
+        request=request, name="main_page/index.html",
         context={
             "title_tag": SERVICE_NAME,
             "title": SERVICE_NAME,

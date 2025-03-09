@@ -1,0 +1,20 @@
+<div id="otherPosts">
+  <div class="columns">
+    {% for post in otherPosts %}
+    <div class="column">
+      <image
+        style="height: 100vh; width: 100%"
+        src="{{ post.page_media }}"
+      />
+    </div>
+    <div class="column">
+      {% set post_content = post.page_content[:max_length] %} {% set
+      post_char_tag_open = post_content.rfind("<") %} {% set post_char_tag_close
+      = post_content.rfind(">") %} {% if post_char_tag_open != -1 and
+      post_char_tag_open < post_char_tag_close %} {{ post_content | safe }} {%
+      else %} {{ post_content[:post_char_tag_open] | safe }} {% endif %} ...
+      <a href="{{ post.page_url }}">Читать далее</a>
+    </div>
+    {% endfor %}
+  </div>
+</div>
