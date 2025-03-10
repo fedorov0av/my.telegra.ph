@@ -7,7 +7,7 @@ from app import setup
 from app.api.page import router_page
 from app.api.seo import router_seo
 from app.api.main_page import router_main_page
-from .config.consts import config
+from app.config.consts import config
 
 
 DEV = config["DEV"]

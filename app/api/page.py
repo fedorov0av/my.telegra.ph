@@ -1,19 +1,18 @@
 from fastapi import APIRouter, Request, HTTPException, Depends
-from fastapi.templating import Jinja2Templates
 from loguru import logger
 from html_utils import nodes_to_html
 
-from ..setup import DBSessionDep
-from ..schemas.page import PageS, PageList, PageResponse
-from ..secure import get_api_key
-from ..db.models.page import PageDB
-from ..utils.text_conversion import get_date_for_content, convert_text_for_url, get_date_for_title
-from ..config.consts import SERVICE_NAME
-from ..tasks import add_index
+from app.setup import DBSessionDep
+from app.schemas.page import PageS, PageList, PageResponse
+from app.secure import get_api_key
+from app.db.models.page import PageDB
+from app.utils.text_conversion import get_date_for_content, convert_text_for_url, get_date_for_title
+from app.utils.jinja import templates
+from app.config.consts import SERVICE_NAME
+from app.tasks import add_index
 
-templates = Jinja2Templates(directory="app/templates")
+
 router_page = APIRouter(tags=["Pages"])
-
 
 @router_page.post("/createPage/", response_model=PageResponse)
 async def create_page(session: DBSessionDep, page: PageS, request: Request, api_key: str = Depends(get_api_key)) -> dict:

@@ -9,12 +9,8 @@
       </figure>
     </div>
     <div class="column">
-      {% set last_page_content = last_page.page_content[:max_length] %} {% set
-      last_char_teg_open = last_page_content.rfind("<") %} {% set
-      last_char_teg_close = last_page_content.rfind(">") %} {% if
-      last_char_teg_open != -1 and last_char_teg_open < last_char_teg_close %}
-      {{ last_page_content | safe }} {% else %} {{
-      last_page_content[:last_char_teg_open] | safe }} {% endif %} ...
+      {% set truncated_html = last_page.page_content |
+      truncate_html_with_tags(max_length) %} {{ truncated_html | safe }} ...
       <a href="{{ last_page.page_url }}">Читать далее</a>
     </div>
   </div>

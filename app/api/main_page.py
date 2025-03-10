@@ -1,22 +1,21 @@
 from fastapi import APIRouter, Request, Depends
-from fastapi.templating import Jinja2Templates
+from fastapi_pagination import Page, Params, set_params, set_page
+from fastapi_pagination.ext.sqlalchemy import paginate
 from loguru import logger
 from typing import Any
 from html_utils import nodes_to_html
-from fastapi_pagination import Page, pagination_ctx, Params, set_params, set_page
-from fastapi_pagination.ext.sqlalchemy import paginate
 from sqlalchemy import select
 
-from ..secure import get_api_key
-from ..db.models.page import PageDB
-from ..schemas.page import PageContent, PageResponseMainS, PageMainS, PageOut
-from ..config.consts import SERVICE_NAME, HTML_MAIN_PAGE_CONT_NOT_FOUND
-from ..setup import DBSessionDep
-from ..utils.seo import add_index
-
+from app.secure import get_api_key
+from app.db.models.page import PageDB
+from app.schemas.page import PageContent, PageResponseMainS, PageMainS, PageOut
+from app.config.consts import SERVICE_NAME
+from app.setup import DBSessionDep
+from app.utils.seo import add_index
+from app.utils.jinja import templates
 
 router_main_page = APIRouter(tags=["Main page"])
-templates = Jinja2Templates(directory="app/templates")
+
 @router_main_page.post("/setMainPage/", response_model=PageResponseMainS)
 async def set_main_page(session: DBSessionDep, page_content: PageContent, request: Request, api_key: str = Depends(get_api_key)):
     """
