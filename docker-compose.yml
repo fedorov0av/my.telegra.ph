@@ -11,7 +11,7 @@ services:
     networks:
       - docker_network
     environment:
-      - DATABASE_URL=postgresql://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME}  # Подключение к PostgreSQL
+      - DATABASE_URL=postgresql://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME} # Подключение к PostgreSQL
     depends_on:
       postgres:
         condition: service_started
@@ -36,8 +36,8 @@ services:
     volumes:
       - ./Caddyfile:/etc/caddy/Caddyfile
     ports:
-      - "80:80"  # HTTP порт
-      - "443:443"  # HTTPS порт
+      - "80:80"
+      - "443:443"
     networks:
       - docker_network
 
@@ -45,13 +45,13 @@ services:
     image: postgres:13-alpine3.14
     restart: unless-stopped
     environment:
-      POSTGRES_USER: ${DB_USER}        # Имя пользователя PostgreSQL
-      POSTGRES_PASSWORD: ${DB_PASSWORD} # Пароль пользователя
-      POSTGRES_DB: ${DB_NAME}    # Имя базы данных
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
     ports:
-      - "${DB_PORT}:${DB_PORT}"  # для Dev
+      - "${DB_PORT}:${DB_PORT}" # для Dev
     volumes:
-      - ./database/postgres_data:/var/lib/postgresql/data  # Тома для хранения данных PostgreSQL
+      - ./database/postgres_data:/var/lib/postgresql/data
     networks:
       - docker_network
 
