@@ -1,17 +1,47 @@
 <div id="topPost">
-  <div class="columns">
-    <div class="column">
-      <figure class="image">
-        <image
-          style="height: 100vh; width: 100%"
-          src="{{ last_page.page_media }}"
-        />
-      </figure>
-    </div>
-    <div class="column">
-      {% set truncated_html = last_page.page_content |
-      truncate_html_with_tags(max_length) %} {{ truncated_html | safe }} ...
-      <a href="{{ last_page.page_url }}">Читать далее</a>
+  <div class="columns is-centered">
+    <div class="column is-12-mobile is-8-tablet is-6-desktop">
+      <a
+        href="{{ last_page.page_url }}"
+        class="post-link"
+      >
+        <div
+          class="box post-box"
+          style="
+            display: flex;
+            flex-direction: row;
+            align-items: stretch;
+            max-width: 800px;
+            margin: 0 auto;
+          "
+        >
+          <figure
+            class="image"
+            style="
+              flex-grow: 0;
+              flex-shrink: 0;
+              margin: 0;
+              width: 40%;
+              height: auto;
+            "
+          >
+            <img
+              style="object-fit: cover; width: 100%; height: 100%"
+              src="{{ last_page.page_media }}"
+              alt="image"
+            />
+          </figure>
+
+          <div
+            class="content"
+            style="flex-grow: 1; padding: 10px; width: 100%; text-align: left"
+          >
+            {% set truncated_html = last_page.page_content |
+            truncate_html_with_tags(max_length) %} {{ truncated_html | safe }}
+            ......
+          </div>
+        </div>
+      </a>
     </div>
   </div>
 </div>

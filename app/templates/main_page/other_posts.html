@@ -1,16 +1,36 @@
 <div id="otherPosts">
-  <div class="columns">
+  <div class="columns is-multiline">
     {% for post in otherPosts %}
-    <div class="column">
-      <image
-        style="height: 100vh; width: 100%"
-        src="{{ post.page_media }}"
-      />
-    </div>
-    <div class="column">
-      {% set truncated_html = post.page_content |
-      truncate_html_with_tags(max_length) %} {{ truncated_html | safe }} ...
-      <a href="{{ post.page_url }}">Читать далее</a>
+    <div class="column is-12-mobile is-6-tablet is-3-desktop">
+      <a
+        href="{{ post.page_url }}"
+        class="post-link"
+      >
+        <div
+          class="box post-box"
+          style="display: flex; flex-direction: column; align-items: stretch"
+        >
+          <figure
+            class="image"
+            style="flex-grow: 0; flex-shrink: 0; margin: 0 auto; height: auto"
+          >
+            <img
+              style="object-fit: cover; width: 100%; height: auto"
+              src="{{ post.page_media }}"
+              alt="image"
+            />
+          </figure>
+
+          <div
+            class="content"
+            style="flex-grow: 1; padding: 10px; height: auto"
+          >
+            {% set truncated_html = post.page_content |
+            truncate_html_with_tags(max_length) %} {{ truncated_html | safe }}
+            <b>......</b>
+          </div>
+        </div>
+      </a>
     </div>
     {% endfor %}
   </div>

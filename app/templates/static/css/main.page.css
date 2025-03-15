@@ -1,0 +1,18 @@
+div#topPost {
+  margin: 0;
+  justify-content: center;
+  width: 100%;
+}
+.post-box {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+}
+
+.post-box:hover {
+  transform: translateY(-10px);
+  box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+.post-link {
+  text-decoration: none;
+}

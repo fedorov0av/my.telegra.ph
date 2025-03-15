@@ -51,7 +51,7 @@ async def set_main_page(session: DBSessionDep, page_content: PageContent, reques
     return {"ok": True, "result": page}
 
 @router_main_page.get("/")
-async def get_main_page(session: DBSessionDep, request: Request, page: int = 1, size: int = 4):
+async def get_main_page(session: DBSessionDep, request: Request, page: int = 1, size: int = 8):
     """
     Returns:
         - The HTML main page.
@@ -76,7 +76,7 @@ async def get_main_page(session: DBSessionDep, request: Request, page: int = 1, 
             "description": SERVICE_NAME,
             "published_time": last_page.created_at,
             "modified_time": last_page.updated_at,
-            "max_length": 250,
+            "max_length": 125,
             "last_page": last_page,
             "otherPosts": result.items,
             "pages": {
