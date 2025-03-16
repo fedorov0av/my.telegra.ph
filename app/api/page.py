@@ -109,7 +109,7 @@ async def get_page(session: DBSessionDep, page_path: str, request: Request):
     if not page_db: 
         raise HTTPException(status_code=404, detail="Page not found")
     return templates.TemplateResponse(
-        request=request, name="base.html",
+        request=request, name="post/index.html",
         context={
             "title_tag": page_db.page_title + ' – ' + SERVICE_NAME,
             "title": page_db.page_title,

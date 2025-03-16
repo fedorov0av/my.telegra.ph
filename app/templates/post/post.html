@@ -1,0 +1,25 @@
+<div class="tl_page_wrap">
+  <div class="tl_page">
+    <main class="tl_article">
+      <header
+        class="tl_article_header"
+        dir="auto"
+      >
+        <h1>{{ title }}</h1>
+        <address>
+          <a rel="author"></a
+          ><!--
+         --><time datetime="{{ published_time }}">{{ date }}</time>
+        </address>
+      </header>
+      <article
+        id="_tl_editor"
+        class="tl_article_content"
+      >
+        <h1>{{ title }}<br /></h1>
+        <address><br /></address>
+        {{ html_content | safe }}
+      </article>
+    </main>
+  </div>
+</div>
