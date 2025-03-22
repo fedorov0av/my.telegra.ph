@@ -3,58 +3,83 @@
   role="navigation"
   aria-label="pagination"
 >
+  <!-- Кнопка "Назад" -->
+  {% if pages.page > 1 %}
   <a
-    href="#"
+    href="/?page={{ pages.page - 1 }}&size={{ pages.size }}"
     class="pagination-previous"
     >Назад</a
   >
+  {% endif %}
+
+  <!-- Кнопка "Вперед" -->
+  {% if pages.page < pages.pages %}
   <a
-    href="#"
+    href="/?page={{ pages.page + 1 }}&size={{ pages.size }}"
     class="pagination-next"
     >Вперёд</a
   >
+  {% endif %}
+
   <ul class="pagination-list">
+    <!-- Первая страница и предшествующая ей -->
+    {% if pages.page > 2 %}
     <li>
       <a
-        href="#"
+        href="/?page=1&size={{ pages.size }}"
         class="pagination-link"
         aria-label="Goto page 1"
         >1</a
       >
     </li>
     <li><span class="pagination-ellipsis">&hellip;</span></li>
+    {% endif %}
+
+    <!-- Страница перед текущей (если не на первой) -->
+    {% if pages.page > 1 %}
     <li>
       <a
-        href="#"
+        href="/?page={{ pages.page - 1 }}&size={{ pages.size }}"
         class="pagination-link"
-        aria-label="Goto page 45"
+        aria-label="Goto page {{ pages.page - 1 }}"
         >{{ pages.page - 1 }}</a
       >
     </li>
+    {% endif %}
+
+    <!-- Текущая страница -->
     <li>
       <a
         class="pagination-link is-current"
-        aria-label="Page 46"
+        aria-label="Page {{ pages.page }}"
         aria-current="page"
         >{{ pages.page }}</a
       >
     </li>
+
+    <!-- Страница после текущей (если не на последней) -->
+    {% if pages.page < pages.pages %}
     <li>
       <a
-        href="#"
+        href="/?page={{ pages.page + 1 }}&size={{ pages.size }}"
         class="pagination-link"
-        aria-label="Goto page 47"
+        aria-label="Goto page {{ pages.page + 1 }}"
         >{{ pages.page + 1 }}</a
       >
     </li>
+    {% endif %}
+
+    <!-- Последняя страница и следующее за ней -->
+    {% if pages.page < pages.pages - 1 %}
     <li><span class="pagination-ellipsis">&hellip;</span></li>
     <li>
       <a
-        href="#"
+        href="/?page={{ pages.pages }}&size={{ pages.size }}"
         class="pagination-link"
-        aria-label="Goto page 86"
-        >{{ pages.total }}</a
+        aria-label="Goto page {{ pages.pages }}"
+        >{{ pages.pages }}</a
       >
     </li>
+    {% endif %}
   </ul>
 </nav>

@@ -9,7 +9,7 @@ from sqlalchemy import select
 from app.secure import get_api_key
 from app.db.models.page import PageDB
 from app.schemas.page import PageContent, PageResponseMainS, PageMainS, PageOut
-from app.config.consts import SERVICE_NAME
+from app.config.consts import SERVICE_NAME, SHORT_TEXT_LIMIT
 from app.setup import DBSessionDep
 from app.utils.seo import add_index
 from app.utils.jinja import templates
@@ -76,7 +76,7 @@ async def get_main_page(session: DBSessionDep, request: Request, page: int = 1, 
             "description": SERVICE_NAME,
             "published_time": last_page.created_at,
             "modified_time": last_page.updated_at,
-            "max_length": 125,
+            "max_length": SHORT_TEXT_LIMIT,
             "last_page": last_page,
             "otherPosts": result.items,
             "pages": {

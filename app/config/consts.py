@@ -16,6 +16,7 @@ LOCALES_DIR = BASE_DIR / "src/locales"
 TEMPLATE_DIR = BASE_DIR / "templates"
 INDEXNOW_KEY = config["INDEXNOW_KEY"]
 SERVICE_NAME = config["SERVICE_NAME"]
+SHORT_TEXT_LIMIT = 125
 
 for DIR in [LOG_DIR, MEDIA_DIR, DATABASE_DIR]:
     DIR.mkdir(exist_ok=True)
