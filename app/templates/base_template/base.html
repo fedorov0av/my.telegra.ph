@@ -114,6 +114,8 @@
     />
   </head>
   <body>
-    {% block content %} {% endblock %}
+    {% include 'base_template/modals/about.html' %} {% include
+    'base_template/modals/contact.html' %} {% include
+    'base_template/navbar.html' %} {% block content %} {% endblock %}
   </body>
 </html>
